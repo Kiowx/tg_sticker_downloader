@@ -1,7 +1,6 @@
 # TG Sticker Downloader
 
 一个纯前端的 Telegram 贴纸包在线预览与批量下载工具。无需后端，打开即用。
-<img width="2539" height="1188" alt="QQ_1776674954027" src="https://github.com/user-attachments/assets/5908e88b-fe60-41ce-b24c-1e9405e621dd" />
 
 
 ## 功能

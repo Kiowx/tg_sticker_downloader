@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#07070f">
+<title>TG Sticker Downloader</title>
+<style>
+:root{--bg:#07070f;--bg2:#0c0c18;--glass:rgba(255,255,255,.03);--glass2:rgba(255,255,255,.055);--border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.10);--accent:#3b82f6;--accent2:#8b5cf6;--ag:linear-gradient(135deg,#3b82f6,#8b5cf6);--green:#10b981;--red:#f43f5e;--yellow:#f59e0b;--text:#f1f5f9;--text2:#94a3b8;--text3:#475569;--r:16px;--rs:10px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Roboto,'Noto Sans SC','PingFang SC',sans-serif;background:var(--bg);color:var(--text);min-height:100%;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+body::before{content:'';position:fixed;top:-40%;left:-20%;width:70vw;height:70vw;background:radial-gradient(circle,rgba(59,130,246,.08),transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:-30%;right:-15%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(139,92,246,.06),transparent 70%);pointer-events:none;z-index:0}
+.hd{position:relative;z-index:1;text-align:center;padding:2.5rem 1.5rem 1.5rem}
+.logo{display:inline-flex;align-items:center;justify-content:center;width:68px;height:68px;border-radius:20px;background:var(--ag);box-shadow:0 8px 32px rgba(59,130,246,.25),inset 0 0 0 1px rgba(255,255,255,.08);margin-bottom:.85rem}
+.logo svg{width:36px;height:36px;fill:#fff}
+.hd h1{font-size:1.45rem;font-weight:700;letter-spacing:-.03em}
+.hd h1 span{background:var(--ag);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hd p{color:var(--text3);font-size:.8rem;margin-top:.25rem}
+.w{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 1rem 3rem}
+.c{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;margin-bottom:.7rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+details.c>summary{cursor:pointer;font-weight:600;font-size:.85rem;color:var(--text3);list-style:none;display:flex;align-items:center;gap:.5rem;user-select:none}
+details.c>summary::-webkit-details-marker{display:none}
+details.c>summary .ar{margin-left:auto;width:16px;height:16px;transition:transform .25s;opacity:.3}
+details.c[open]>summary .ar{transform:rotate(90deg)}
+details.c .inn{margin-top:1rem}
+.fd{margin-bottom:.6rem}.fd:last-child{margin-bottom:0}
+.fl{display:block;font-size:.68rem;color:var(--text3);margin-bottom:.2rem;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+input[type="text"],input[type="password"]{width:100%;padding:.7rem .85rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:.85rem;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus{border-color:rgba(59,130,246,.4);box-shadow:0 0 0 3px rgba(59,130,246,.08)}
+input::placeholder{color:var(--text3)}
+.b{display:inline-flex;align-items:center;justify-content:center;gap:.3rem;padding:.6rem 1rem;border:none;border-radius:var(--rs);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;color:#fff;user-select:none;position:relative;overflow:hidden}
+.b::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 60%);pointer-events:none}
+.b:active{transform:scale(.96)}.b:disabled{opacity:.4;pointer-events:none}
+.bp{background:var(--ag);box-shadow:0 4px 16px rgba(59,130,246,.2)}
+.bg{background:linear-gradient(135deg,#059669,var(--green));box-shadow:0 4px 12px rgba(16,185,129,.15)}
+.bo{background:var(--glass2);border:1px solid var(--border);color:var(--text2);box-shadow:none}.bo::after{display:none}
+.bs{padding:.38rem .7rem;font-size:.73rem;border-radius:8px}
+.rb{display:flex;gap:.4rem;flex-wrap:wrap}
+.sr{display:flex;gap:.6rem}.sr input{flex:1;min-width:0}
+.t{padding:.65rem .85rem;border-radius:var(--rs);font-size:.78rem;line-height:1.5;margin-bottom:.7rem;display:none;animation:si .25s ease}
+@keyframes si{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.t.show{display:block}
+.t.info{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12);color:var(--accent)}
+.t.error{background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.12);color:var(--red)}
+.t.ok{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.12);color:var(--green)}
+.t.warn{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.12);color:var(--yellow)}
+.pk{display:none}.pk.show{display:block}
+.ph2{display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem}
+.pa{width:42px;height:42px;border-radius:12px;background:var(--ag);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pa svg{width:22px;height:22px;fill:#fff}
+.pt{font-size:1.1rem;font-weight:700;word-break:break-word}
+.ps{font-size:.75rem;color:var(--text3);margin-top:.05rem}
+.tg{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.85rem}
+.tgi{font-size:.65rem;padding:.18rem .55rem;border-radius:20px;background:var(--glass2);color:var(--text2);border:1px solid var(--border);font-weight:500}
+.tgi.hl{background:rgba(59,130,246,.08);color:var(--accent);border-color:rgba(59,130,246,.15)}
+.tb{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;padding-bottom:.75rem;margin-bottom:.85rem;border-bottom:1px solid var(--border)}
+.tb .sp{flex:1}
+.tb select{padding:.38rem .55rem;background:var(--bg2);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:.73rem;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer}
+.db{display:none;align-items:center;gap:.6rem;padding:.55rem .75rem;background:var(--glass2);border-radius:var(--rs);border:1px solid var(--border);margin-bottom:.85rem}
+.db.show{display:flex}
+.dr{position:relative;width:34px;height:34px;flex-shrink:0}
+.dr svg{width:34px;height:34px;transform:rotate(-90deg)}
+.dr circle{fill:none;stroke-width:3;stroke-linecap:round}
+.dr .trk{stroke:var(--glass2)}.dr .bar{stroke:url(#rg);transition:stroke-dashoffset .35s}
+.dp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:700;color:var(--text2)}
+.di{flex:1;min-width:0}
+.dit{font-size:.76rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.did{font-size:.66rem;color:var(--text3);margin-top:.05rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.55rem}
+.ce{aspect-ratio:1;background:var(--glass);border:2px solid transparent;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.3rem;position:relative;overflow:hidden;cursor:pointer;user-select:none;transition:border-color .2s,transform .12s,background .2s}
+.ce:active{transform:scale(.94)}
+.ce.on{border-color:var(--accent2);background:rgba(139,92,246,.05)}
+.ce img,.ce video,.ce canvas{max-width:82%;max-height:66%;object-fit:contain;border-radius:4px}
+.ce-e{font-size:.65rem;margin-top:.1rem;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:90%}
+.ce-i{position:absolute;top:.15rem;left:.35rem;font-size:.55rem;color:var(--text3);opacity:.4;font-weight:600}
+.ce-c{position:absolute;top:.2rem;right:.25rem;width:1rem;height:1rem;border-radius:50%;border:1.5px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.48rem;color:transparent;background:rgba(0,0,0,.25);transition:all .2s}
+.ce.on .ce-c{background:var(--accent2);border-color:var(--accent2);color:#fff}
+.ce-d{position:absolute;bottom:.2rem;right:.25rem;padding:.15rem .4rem;border-radius:6px;background:rgba(59,130,246,.9);color:#fff;font-size:.55rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;border:none;cursor:pointer}
+.ce:hover .ce-d,.ce:active .ce-d{opacity:1;pointer-events:auto}
+.ce-s{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:.6rem;pointer-events:none;z-index:2}
+.ce-s.ok{display:flex;background:rgba(16,185,129,.9);color:#fff;animation:pp .3s}
+.ce-s.fl{display:flex;background:rgba(244,63,94,.9);color:#fff;animation:pp .3s}
+.ce-s.wk{display:flex;background:rgba(139,92,246,.85);color:#fff;animation:spn .8s linear infinite}
+@keyframes pp{from{transform:translate(-50%,-50%) scale(0)}to{transform:translate(-50%,-50%) scale(1)}}
+@keyframes spn{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+.lp{width:46px;height:46px;border-radius:10px;background:var(--glass2);animation:pu 2s ease-in-out infinite}
+@keyframes pu{0%,100%{opacity:.25}50%{opacity:.6}}
+.hm{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.65rem}
+.hm .b{flex:0 0 auto}
+.mo{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:1rem;z-index:20;background:rgba(7,7,15,.76);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.mo.show{display:flex;animation:fi .18s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.mc{width:min(720px,100%);max-height:min(84vh,920px);overflow:auto;background:linear-gradient(180deg,rgba(12,12,24,.98),rgba(7,7,15,.98));border:1px solid var(--border2);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.45);padding:1rem}
+.mh2{display:flex;align-items:flex-start;gap:.8rem;margin-bottom:.95rem}
+.mi{width:42px;height:42px;border-radius:14px;background:var(--ag);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:1rem;font-weight:800;box-shadow:0 10px 24px rgba(59,130,246,.2)}
+.mt2{min-width:0;flex:1}
+.mt2 h2{font-size:1.05rem;line-height:1.25}
+.mt2 p{font-size:.74rem;color:var(--text3);margin-top:.18rem}
+.mb2{display:grid;gap:.75rem}
+.mn{padding:.85rem .95rem;border-radius:14px;background:var(--glass2);border:1px solid var(--border)}
+.mn h3{font-size:.85rem;font-weight:700;margin-bottom:.28rem}
+.mn p,.mn li{font-size:.77rem;color:var(--text2)}
+.mn ol,.mn ul{padding-left:1.1rem;margin-top:.42rem}
+.mn li+li{margin-top:.22rem}
+.pr{padding:.8rem .9rem;border-radius:12px;background:#050510;border:1px solid rgba(255,255,255,.08);overflow:auto;font-size:.72rem;line-height:1.6;color:#cbd5e1}
+.cm{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.73rem;word-break:break-all}
+.ck{padding:.8rem .9rem;border-radius:14px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.14)}
+.ck .fl{margin-bottom:.3rem}
+.cr{margin-top:.7rem;display:grid;gap:.55rem}
+.csx{padding:.65rem .75rem;border-radius:12px;background:var(--bg2);border:1px solid var(--border);font-size:.76rem;color:var(--text2)}
+.csx.ok{border-color:rgba(16,185,129,.22);background:rgba(16,185,129,.06);color:#d1fae5}
+.csx.warn{border-color:rgba(245,158,11,.22);background:rgba(245,158,11,.06);color:#fde68a}
+.csx.error{border-color:rgba(244,63,94,.22);background:rgba(244,63,94,.06);color:#fecdd3}
+.cl{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.7rem}
+.off{position:absolute;left:-9999px;top:-9999px;pointer-events:none;opacity:0}
+.ft{text-align:center;padding:2rem 1rem;color:var(--text3);font-size:.68rem;line-height:1.7;position:relative;z-index:1}
+@media(max-width:480px){.hd{padding:1.75rem 1rem 1.15rem}.logo{width:56px;height:56px;border-radius:16px}.logo svg{width:30px;height:30px}.hd h1{font-size:1.2rem}.w{padding:0 .7rem 2rem}.c{padding:.9rem;border-radius:13px}.sr{flex-direction:column}.sr .b{width:100%}.g{grid-template-columns:repeat(3,1fr);gap:.4rem}.ce{border-radius:10px}.tb{gap:.25rem}.tb .bs{padding:.3rem .5rem;font-size:.68rem}.tb select{font-size:.7rem;padding:.33rem .45rem}.rb{flex-direction:column}.rb .b{width:100%}.hm .b,.cl .b{width:100%}.mc{padding:.85rem;border-radius:16px}}
+@media(min-width:481px) and (max-width:768px){.g{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:769px){.g{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}.ce:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.25)}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
+
+<a href="https://github.com/Kiowx/tg_sticker_downloader" target="_blank" rel="noopener" style="position:absolute;top:1rem;right:1rem;z-index:2;opacity:.35;transition:opacity .2s" aria-label="GitHub" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='.35'"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+<div class="hd">
+  <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" opacity=".3"/><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm0 0v6h6M12 18v-6m-3 3l3 3 3-3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h1>TG Sticker <span>Downloader</span></h1>
+  <p>输入贴纸包链接，在线预览并批量下载</p>
+</div>
+
+<div class="w">
+
+  <!-- 搜索区 — 最显眼 -->
+  <div class="c">
+    <div class="sr">
+      <input type="text" id="inpLink" placeholder="粘贴链接 t.me/addstickers/xxx 或输入包名" autocomplete="off" enterkeyhint="search" inputmode="url" onkeydown="if(event.key==='Enter'){event.preventDefault();doFetch()}">
+      <button class="b bp" id="btnFetch" onclick="doFetch()">获取</button>
+    </div>
+    <div class="hm">
+      <button class="b bo bs" onclick="openHelp('sticker')">获取 TG 贴纸链接教程</button>
+    </div>
+  </div>
+
+  <!-- 配置区 — 折叠隐藏 -->
+  <details class="c" id="cfgCard">
+    <summary>
+      <svg style="width:16px;height:16px;opacity:.4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      高级配置（可选）
+      <svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </summary>
+    <div class="inn">
+      <div class="fd"><label class="fl">CORS 代理 URL</label><input type="text" id="inpProxy" placeholder="https://xxx.workers.dev"></div>
+      <div class="fd"><label class="fl">Bot Token</label><input type="password" id="inpToken" placeholder="123456:ABC..." autocomplete="off"></div>
+      <div class="rb" style="margin-top:.65rem">
+        <button class="b bg bs" onclick="saveCfg()">保存</button>
+        <button class="b bo bs" onclick="testCfg()">测试连接</button>
+        <button class="b bo bs" onclick="openHelp('cors')">获取 CORS 教程</button>
+        <button class="b bo bs" id="btnToggleToken" onclick="toggleTokenVis()">显示</button>
+        <button class="b bo bs" onclick="resetCfg()">恢复默认</button>
+      </div>
+    </div>
+  </details>
+
+  <div class="t" id="toast"></div>
+
+  <!-- 贴纸包面板 -->
+  <div class="pk" id="pkPanel">
+    <div class="c">
+      <div class="ph2">
+        <div class="pa"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="8.5" cy="9" r="1.5" fill="#fff"/><circle cx="15.5" cy="9" r="1.5" fill="#fff"/><path d="M8 14s1.5 2 4 2 4-2 4-2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div><div class="pt" id="pkT"></div><div class="ps" id="pkS"></div></div>
+      </div>
+      <div class="tg" id="pkTags"></div>
+      <div class="tb">
+        <button class="b bg bs" id="btnAll" onclick="dlAll()">全部下载</button>
+        <button class="b bo bs" onclick="selAll()">全选</button>
+        <button class="b bo bs" onclick="selNone()">取消全选</button>
+        <button class="b bo bs" id="btnSel" onclick="dlSel()">下载选中(0)</button>
+        <span class="sp"></span>
+        <select id="selFmt"><option value="png">PNG</option><option value="gif">GIF</option><option value="original">原始格式（不转换）</option></select>
+      </div>
+      <div class="db" id="dlBar">
+        <div class="dr"><svg viewBox="0 0 36 36"><circle class="trk" cx="18" cy="18" r="15.5"/><circle class="bar" id="rB" cx="18" cy="18" r="15.5" stroke-dasharray="97.4" stroke-dashoffset="97.4"/></svg><div class="dp" id="rP">0%</div></div>
+        <div class="di"><div class="dit" id="dT">准备…</div><div class="did" id="dD"></div></div>
+        <button class="b bo bs" onclick="cancelDl()">取消</button>
+      </div>
+      <div class="g" id="grid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ft">纯前端运行 · 代理仅转发不存储数据 · 支持 WebP / TGS / WebM → PNG / GIF<br><a href="https://github.com/Kiowx/tg_sticker_downloader" target="_blank" rel="noopener" style="color:var(--text3);text-decoration:none">GitHub</a></div>
+<div id="off" class="off"></div>
+<div class="mo" id="helpModal" aria-hidden="true" onclick="if(event.target===this)closeHelp()">
+  <div class="mc" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="mh2">
+      <div class="mi" id="helpIcon">?</div>
+      <div class="mt2">
+        <h2 id="helpTitle">教程</h2>
+        <p id="helpSub">查看说明</p>
+      </div>
+      <button class="b bo bs" onclick="closeHelp()">关闭</button>
+    </div>
+    <div class="mb2" id="helpBody"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script>
+"use strict";
+
+/* ===== DEFAULTS ===== */
+const DEF_PROXY = "https://little-dust-23d1.natishagorczany59.workers.dev";
+const DEF_TOKEN = "7203628923:AAF5D9vqy5o71egC9zIAbZLIcvWw9KP0rNQ";
+const CORS_SAMPLE = `export default {
+  async fetch(req) {
+    const cors = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+      "Access-Control-Allow-Headers": "*"
+    };
+    if (req.method === "OPTIONS") {
+      return new Response(null, { headers: cors });
+    }
+    const url = new URL(req.url);
+    if (url.pathname === "/health") {
+      return Response.json({ status: "ok" }, { headers: cors });
+    }
+    const tg = "https://api.telegram.org" + url.pathname + url.search;
+    const resp = await fetch(tg, {
+      method: req.method,
+      headers: req.headers,
+      body: ["GET", "HEAD"].includes(req.method) ? undefined : req.body
+    });
+    const headers = new Headers(resp.headers);
+    Object.entries(cors).forEach(([k, v]) => headers.set(k, v));
+    return new Response(resp.body, { status: resp.status, headers });
+  }
+};`;
+
+/* ===== STATE ===== */
+let pack=null, selected=new Set(), gwBlob=null, dlAbort=null, pathCache={}, checkedStickerLink='';
+
+/* ===== INIT ===== */
+(function(){
+  document.getElementById('inpProxy').value = localStorage.getItem('tg_proxy') || '';
+  document.getElementById('inpToken').value = localStorage.getItem('tg_token') || '';
+  document.getElementById('inpProxy').placeholder = DEF_PROXY;
+  document.getElementById('inpToken').placeholder = '已内置默认 Token';
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHelp()});
+  fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js')
+    .then(r=>r.blob()).then(b=>{gwBlob=b}).catch(()=>{});
+})();
+
+/* ===== CONFIG ===== */
+function gP(){return (document.getElementById('inpProxy').value.trim()||localStorage.getItem('tg_proxy')||DEF_PROXY).replace(/\/+$/,'')}
+function gT(){return document.getElementById('inpToken').value.trim()||localStorage.getItem('tg_token')||DEF_TOKEN}
+
+function toggleTokenVis(){const inp=document.getElementById('inpToken'),btn=document.getElementById('btnToggleToken');const show=inp.type==='password';inp.type=show?'text':'password';btn.textContent=show?'隐藏':'显示'}
+function saveCfg(){
+  const p=document.getElementById('inpProxy').value.trim();
+  const t=document.getElementById('inpToken').value.trim();
+  if(p) localStorage.setItem('tg_proxy',p); else localStorage.removeItem('tg_proxy');
+  if(t) localStorage.setItem('tg_token',t); else localStorage.removeItem('tg_token');
+  toast('已保存'+((!p&&!t)?' (使用默认值)':''),'ok');
+}
+function resetCfg(){
+  localStorage.removeItem('tg_proxy');localStorage.removeItem('tg_token');
+  document.getElementById('inpProxy').value='';
+  document.getElementById('inpToken').value='';
+  toast('已恢复默认配置','ok');
+}
+async function testCfg(){
+  toast('测试代理…','info');
+  try{
+    const r=await fetch(gP()+'/health');
+    const d=await r.json();
+    if(d.status!=='ok')throw Error(JSON.stringify(d));
+  }catch(e){return toast('代理连接失败：'+e.message,'error')}
+  toast('测试 Token…','info');
+  try{
+    const r=await fetch(gP()+'/bot'+gT()+'/getMe');
+    const d=await r.json();
+    if(!d.ok)throw Error(d.description);
+    toast('连接正常！Bot: @'+d.result.username,'ok');
+  }catch(e){toast('代理正常，Token 无效：'+e.message,'error')}
+}
+
+/* ===== API ===== */
+function apiU(m){return gP()+'/bot'+gT()+m}
+function fileU(fp){return gP()+'/file/bot'+gT()+'/'+fp}
+
+async function apiF(url,signal){
+  for(let i=0;i<3;i++){
+    try{
+      if(signal?.aborted)throw new DOMException('','AbortError');
+      const r=await fetch(url,signal?{signal}:{});
+      if(r.status===429){await sleep(Math.max(+(r.headers.get('Retry-After')||2),2)*1000);continue}
+      return r;
+    }catch(e){
+      if(e.name==='AbortError')throw e;
+      if(i===2)throw e;
+      await sleep(1000*(i+1));
+    }
+  }
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function toast(m,t='info'){const e=document.getElementById('toast');e.className='t show '+t;e.innerHTML=m}
+function noToast(){document.getElementById('toast').className='t'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function parseStickerInput(s){
+  s=s.trim();
+  if(!s)return null;
+  let m=s.match(/^(?:https?:\/\/)?(?:www\.)?(?:t\.me|telegram\.me|telegram\.dog)\/(addstickers|addemoji)\/([A-Za-z0-9_]+)(?:[/?#].*)?$/i);
+  if(m)return{name:m[2],route:m[1].toLowerCase(),source:'url'};
+  try{
+    if(/^tg:\/\//i.test(s)){
+      const u=new URL(s),dm=(u.searchParams.get('domain')||'').toLowerCase(),nm=u.searchParams.get('set')||u.searchParams.get('start')||'';
+      if((dm==='addstickers'||dm==='addemoji')&&/^[A-Za-z0-9_]+$/.test(nm))return{name:nm,route:dm,source:'deeplink'};
+    }
+  }catch{}
+  if(/^[A-Za-z0-9_]+$/.test(s))return{name:s,route:'',source:'name'};
+  return null;
+}
+function parseName(s){return parseStickerInput(s)?.name||null}
+function routeText(r){return r==='addemoji'?'自定义表情包':'贴纸包（含普通与遮罩）'}
+function stickerTypeText(t){return t==='custom_emoji'?'自定义表情包':(t==='mask'?'遮罩贴纸包':'普通贴纸包')}
+function routeBySet(set){return set?.sticker_type==='custom_emoji'?'addemoji':'addstickers'}
+function normalizeStickerLink(name,route){return 'https://t.me/'+(route||'addstickers')+'/'+name}
+function helpTpl(type){
+  if(type==='cors')return{
+    icon:'C',
+    title:'获取 CORS 代理教程',
+    sub:'适合默认代理不可用，或者你想换成自己的代理地址时使用',
+    body:`<div class="mn"><h3>什么时候需要填写这里</h3><p>当前页面留空时会自动使用默认代理 <span class="cm">${esc(DEF_PROXY)}</span>。只有默认代理失效、速度不理想，或者你想完全使用自己的线路时，才需要手动填写。</p></div>
+    <div class="mn"><h3>最快做法：Cloudflare Workers</h3><ol><li>登录 Cloudflare 后进入 <span class="cm">Workers & Pages</span>，新建一个 Worker。</li><li>把默认示例代码替换成下方脚本并部署。</li><li>部署完成后会得到一个形如 <span class="cm">https://你的名字.workers.dev</span> 的地址，把它填到高级配置里的 <span class="cm">CORS 代理 URL</span>。</li><li>回到本页点击 <span class="cm">测试连接</span>，先看代理健康检查，再看 Token 是否可用。</li></ol></div>
+    <div class="mn"><h3>代理最少要支持的三个能力</h3><ul><li><span class="cm">/health</span> 返回 <span class="cm">{"status":"ok"}</span></li><li><span class="cm">/bot&lt;token&gt;/...</span> 能转发 Telegram Bot API 请求</li><li><span class="cm">/file/bot&lt;token&gt;/...</span> 能转发文件下载请求</li></ul></div>
+    <div class="mn"><h3>可直接部署的 Worker 示例</h3><pre class="pr"><code>${esc(CORS_SAMPLE)}</code></pre></div>
+    <div class="mn"><h3>使用提醒</h3><p>如果你只是临时下载贴纸，可以先留空使用默认值；只有在默认代理报错时，再切换为自己的 Worker 地址，通常会更省事。</p></div>`
+  };
+  return{
+    icon:'T',
+    title:'获取 TG 贴纸链接教程',
+    sub:'支持查看链接获取方法，并用本地格式校验 + 远程接口校验做交叉验证',
+    body:`<div class="mn"><h3>怎么拿到贴纸包链接</h3><ol><li>在 Telegram 里打开任意贴纸或表情，点进它所属的贴纸包。</li><li>进入贴纸包详情后，使用 <span class="cm">分享</span> 或 <span class="cm">复制链接</span>。</li><li>复制到的常见格式通常是 <span class="cm">https://t.me/addstickers/包名</span>；自定义表情包常见格式是 <span class="cm">https://t.me/addemoji/包名</span>。</li><li>如果你只拿到了包名，例如 <span class="cm">FunnyDogs</span>，这里也可以直接识别。</li></ol></div>
+    <div class="mn"><h3>复制不到完整链接时</h3><p>你可以先打开贴纸包详情页，记下链接最后一段包名；本页支持直接输入包名，并在下方帮你补全为标准链接。</p></div>
+    <div class="mn"><h3>支持的输入示例</h3><ul><li><span class="cm">https://t.me/addstickers/FunnyDogs</span></li><li><span class="cm">t.me/addemoji/MyEmojiPack</span></li><li><span class="cm">tg://resolve?domain=addstickers&amp;set=FunnyDogs</span></li><li><span class="cm">FunnyDogs</span></li></ul></div>
+    <div class="ck"><label class="fl">贴纸链接 / 包名交叉验证</label><input type="text" id="inpStickerVerify" placeholder="粘贴贴纸链接、tg:// 链接或直接输入包名" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();crossCheckStickerLink()}"><div class="cl"><button class="b bg bs" id="btnStickerCheck" onclick="crossCheckStickerLink()">验证</button><button class="b bo bs" onclick="fillStickerVerifyFromMain()">读取主输入框</button></div><div class="cr" id="stickerCheck"><div class="csx">这里会先做本地结构校验，再调用当前配置的 Telegram 接口做远程存在性与类型校验。</div></div></div>`
+  };
+}
+function openHelp(type){
+  const t=helpTpl(type),m=document.getElementById('helpModal');
+  document.getElementById('helpIcon').textContent=t.icon;
+  document.getElementById('helpTitle').textContent=t.title;
+  document.getElementById('helpSub').textContent=t.sub;
+  document.getElementById('helpBody').innerHTML=t.body;
+  m.classList.add('show');
+  m.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  if(type==='sticker'){
+    fillStickerVerifyFromMain();
+    const e=document.getElementById('inpStickerVerify');
+    if(e)e.focus();
+  }
+}
+function closeHelp(){
+  const m=document.getElementById('helpModal');
+  if(!m.classList.contains('show'))return;
+  m.classList.remove('show');
+  m.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+}
+function fillStickerVerifyFromMain(){
+  const i=document.getElementById('inpStickerVerify'),v=document.getElementById('inpLink')?.value.trim()||'';
+  if(i)i.value=v;
+}
+function applyCheckedStickerLink(fetchNow){
+  const v=checkedStickerLink||document.getElementById('inpStickerVerify')?.value.trim()||'';
+  if(!v)return;
+  document.getElementById('inpLink').value=v;
+  toast('已填入主输入框，可直接获取','ok');
+  if(fetchNow){closeHelp();doFetch()}
+}
+async function crossCheckStickerLink(){
+  const input=document.getElementById('inpStickerVerify'),out=document.getElementById('stickerCheck'),btn=document.getElementById('btnStickerCheck');
+  if(!input||!out)return;
+  const raw=input.value.trim(),p=parseStickerInput(raw);
+  checkedStickerLink='';
+  if(!raw){out.innerHTML='<div class="csx warn">请先粘贴贴纸链接或输入包名。</div>';return}
+  if(!p){out.innerHTML='<div class="csx error">本地格式校验未通过。请检查是否为 <span class="cm">t.me/addstickers/包名</span>、<span class="cm">t.me/addemoji/包名</span>、<span class="cm">tg://...</span>，或者直接输入包名。</div>';return}
+  const localLink=normalizeStickerLink(p.name,p.route||'addstickers');
+  out.innerHTML=`<div class="csx ok">本地结构校验通过：识别到包名 <span class="cm">${esc(p.name)}</span>${p.route?`，链接类型为 <span class="cm">${esc(p.route)}</span>（${routeText(p.route)}）`:'，当前是“仅包名”输入，下一步会帮你补全标准链接'}。</div><div class="csx">远程校验中：正在通过当前代理和 Token 调用 <span class="cm">getStickerSet</span> 做存在性与类型校验...</div>`;
+  if(btn)btn.disabled=true;
+  try{
+    const r=await apiF(apiU('/getStickerSet?name='+encodeURIComponent(p.name)));
+    const d=await r.json();
+    if(!d.ok)throw Error(d.description||'未知错误');
+    const set=d.result,actualRoute=routeBySet(set),actualLink=normalizeStickerLink(set.name||p.name,actualRoute),routeMatch=!p.route||p.route===actualRoute;
+    checkedStickerLink=actualLink;
+    out.innerHTML=`<div class="csx ok">本地结构校验通过：识别到包名 <span class="cm">${esc(p.name)}</span>${p.route?`，输入类型为 <span class="cm">${esc(p.route)}</span>`:'，输入为包名模式'}。</div><div class="csx ${routeMatch?'ok':'warn'}">远程校验通过：已查询到 <span class="cm">${esc(set.title||set.name||p.name)}</span>，共 ${set.stickers?.length||0} 个，实际类型为 ${stickerTypeText(set.sticker_type)}。${routeMatch?'你输入的链接类型与真实包类型一致。':'你输入的链接类型与真实包类型不一致，下面给出修正后的标准链接。'}</div><div class="csx">推荐标准链接：<span class="cm">${esc(actualLink)}</span></div><div class="cl"><button class="b bg bs" onclick="applyCheckedStickerLink(false)">填入主输入框</button><button class="b bo bs" onclick="applyCheckedStickerLink(true)">填入并立即获取</button></div>`;
+  }catch(e){
+    checkedStickerLink=localLink;
+    out.innerHTML=`<div class="csx ok">本地结构校验通过：已提取到包名 <span class="cm">${esc(p.name)}</span>，可先用结构化链接继续尝试。</div><div class="csx warn">远程校验失败：${esc(e.message)}。这通常表示贴纸包不存在，或者当前代理 / Token 暂时不可用。你仍然可以先使用下面的标准链接，再手动点击获取。</div><div class="csx">临时补全链接：<span class="cm">${esc(localLink)}</span></div><div class="cl"><button class="b bg bs" onclick="applyCheckedStickerLink(false)">填入主输入框</button></div>`;
+  }finally{if(btn)btn.disabled=false}
+}
+
+/* ===== FETCH SET ===== */
+async function doFetch(){
+  const n=parseName(document.getElementById('inpLink').value);
+  if(!n)return toast('请输入有效链接或包名','error');
+  document.getElementById('btnFetch').disabled=true;
+  toast('正在获取…','info');
+  try{
+    const r=await apiF(apiU('/getStickerSet?name='+encodeURIComponent(n)));
+    const d=await r.json();
+    if(!d.ok)throw Error(d.description||'未知错误');
+    pack=d.result;selected=new Set(pack.stickers.map((_,i)=>i));pathCache={};
+    renderPk();loadTh();noToast();
+  }catch(e){toast('获取失败：'+e.message,'error')}
+  finally{document.getElementById('btnFetch').disabled=false}
+}
+
+/* ===== RENDER ===== */
+function renderPk(){
+  document.getElementById('pkPanel').classList.add('show');
+  document.getElementById('pkT').textContent=pack.title;
+  document.getElementById('pkS').textContent=pack.name;
+  const isA=pack.is_animated,isV=pack.is_video;
+  let tp='静态 WebP';if(isA)tp='动画 TGS';if(isV)tp='视频 WebM';
+  document.getElementById('pkTags').innerHTML=`<span class="tgi hl">${pack.stickers.length} 个</span><span class="tgi">${tp}</span>`;
+  document.getElementById('selFmt').value=(isA||isV)?'gif':'png';
+  const g=document.getElementById('grid');g.innerHTML='';
+  pack.stickers.forEach((s,i)=>{
+    const c=document.createElement('div');c.className='ce on';c.dataset.i=i;
+    c.addEventListener('click',e=>{if(!e.target.closest('.ce-d'))togSel(i)});
+    c.innerHTML=`<span class="ce-i">${i+1}</span><span class="ce-c">✓</span><div class="lp" id="lp${i}"></div><span class="ce-e">${s.emoji||''}</span><button class="ce-d" onclick="event.stopPropagation();dlOne(${i})">⬇</button><div class="ce-s" id="cs${i}"></div>`;
+    g.appendChild(c);
+  });
+  updSel();
+  document.getElementById('pkPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function badge(i,cls,txt){const e=document.getElementById('cs'+i);if(!e)return;e.className='ce-s';e.textContent='';if(!cls)return;e.classList.add(cls);e.textContent=txt||''}
+
+/* ===== THUMBS ===== */
+async function loadTh(){
+  for(let i=0;i<pack.stickers.length;i++){
+    const s=pack.stickers[i];
+    try{
+      const fid=s.thumbnail?.file_id||s.file_id;
+      let fp=pathCache[fid];
+      if(!fp){const d=await(await apiF(apiU('/getFile?file_id='+fid))).json();if(!d.ok)continue;fp=d.result.file_path;pathCache[fid]=fp}
+      const url=fileU(fp),ph=document.getElementById('lp'+i);if(!ph)continue;
+      const sty='max-width:82%;max-height:66%;object-fit:contain;border-radius:4px';
+      if(fp.endsWith('.webm')){
+        const v=document.createElement('video');Object.assign(v,{src:url,autoplay:true,loop:true,muted:true,playsInline:true});v.setAttribute('playsinline','');v.style.cssText=sty;ph.replaceWith(v);
+      }else if(fp.endsWith('.tgs')){
+        try{const blob=await(await fetch(url)).blob();const raw=await gz(new Uint8Array(await blob.arrayBuffer()));const json=JSON.parse(new TextDecoder().decode(raw));const cv=document.createElement('canvas');cv.width=128;cv.height=128;cv.style.cssText=sty;ph.replaceWith(cv);lottie.loadAnimation({container:document.createElement('div'),renderer:'canvas',loop:true,autoplay:true,animationData:JSON.parse(JSON.stringify(json)),rendererSettings:{context:cv.getContext('2d'),clearCanvas:true}})}
+        catch{const img=document.createElement('img');img.src=url;img.loading='lazy';img.style.cssText=sty;ph.replaceWith(img)}
+      }else{const img=document.createElement('img');img.src=url;img.loading='lazy';img.style.cssText=sty;ph.replaceWith(img)}
+    }catch(e){console.warn('th#'+i,e)}
+  }
+}
+async function gz(u8){if(typeof DecompressionStream!=='undefined')return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());throw Error('浏览器不支持解压')}
+
+/* ===== SELECTION ===== */
+function togSel(i){selected.has(i)?selected.delete(i):selected.add(i);document.querySelector('.ce[data-i="'+i+'"]')?.classList.toggle('on',selected.has(i));updSel()}
+function selAll(){pack.stickers.forEach((_,i)=>{selected.add(i);document.querySelector('.ce[data-i="'+i+'"]')?.classList.add('on')});updSel()}
+function selNone(){selected.clear();document.querySelectorAll('.ce').forEach(e=>e.classList.remove('on'));updSel()}
+function updSel(){document.getElementById('btnSel').textContent='下载选中('+selected.size+')'}
+
+/* ===== DOWNLOAD CORE ===== */
+async function resolveFp(fid,sig){if(pathCache[fid])return pathCache[fid];const r=await apiF(apiU('/getFile?file_id='+fid),sig);const d=await r.json();if(!d.ok)throw Error(d.description||'getFile fail');pathCache[fid]=d.result.file_path;return d.result.file_path}
+async function dlBlob(fp,sig){const r=await apiF(fileU(fp),sig);if(!r.ok)throw Error('HTTP '+r.status);return r.blob()}
+async function getStk(s,sig){const fp=await resolveFp(s.file_id,sig);const b=await dlBlob(fp,sig);return{blob:b,ext:fp.split('.').pop()||'webp'}}
+
+/* ===== CONVERT ===== */
+function w2p(b){return new Promise((y,n)=>{const i=new Image();i.onload=()=>{const c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;c.getContext('2d').drawImage(i,0,0);c.toBlob(r=>{URL.revokeObjectURL(i.src);r?y(r):n(Error('png fail'))},'image/png')};i.onerror=()=>{URL.revokeObjectURL(i.src);n(Error('img fail'))};i.src=URL.createObjectURL(b)})}
+async function t2g(b){const raw=await gz(new Uint8Array(await b.arrayBuffer()));const j=JSON.parse(new TextDecoder().decode(raw));const S=256,fps=j.fr||30,tot=(j.op-j.ip)||60,dl=Math.round(1000/fps);const cv=document.createElement('canvas');cv.width=S;cv.height=S;const ctx=cv.getContext('2d');const box=document.getElementById('off');box.innerHTML='';box.appendChild(cv);const a=lottie.loadAnimation({container:document.createElement('div'),renderer:'canvas',loop:false,autoplay:false,animationData:JSON.parse(JSON.stringify(j)),rendererSettings:{context:ctx,clearCanvas:true,preserveAspectRatio:'xMidYMid meet'}});await new Promise(r=>a.addEventListener('DOMLoaded',r));if(!gwBlob)throw Error('GIF Worker未加载，请刷新');const g=new GIF({workers:2,workerScript:URL.createObjectURL(gwBlob),quality:8,width:S,height:S,transparent:0});for(let f=0;f<tot;f++){a.goToAndStop(f,true);await new Promise(r=>requestAnimationFrame(r));const fc=document.createElement('canvas');fc.width=S;fc.height=S;fc.getContext('2d').drawImage(cv,0,0);g.addFrame(fc,{delay:dl,copy:true,dispose:2})}a.destroy();box.innerHTML='';return new Promise((y,n)=>{g.on('finished',y);g.on('error',n);g.render()})}
+async function v2g(b){const S=256,u=URL.createObjectURL(b);const v=document.createElement('video');v.muted=true;v.playsInline=true;v.src=u;await new Promise((y,n)=>{v.onloadedmetadata=y;v.onerror=n});const dur=v.duration;if(!dur||!isFinite(dur))throw Error('video fail');const fps=15,tot=Math.min(Math.ceil(dur*fps),150),dl=Math.round(1000/fps);const vw=v.videoWidth||S,vh=v.videoHeight||S,sc=Math.min(S/vw,S/vh),cw=Math.round(vw*sc),ch=Math.round(vh*sc);const cv=document.createElement('canvas');cv.width=cw;cv.height=ch;const ctx=cv.getContext('2d');if(!gwBlob)throw Error('GIF Worker未加载');const g=new GIF({workers:2,workerScript:URL.createObjectURL(gwBlob),quality:10,width:cw,height:ch});for(let f=0;f<tot;f++){v.currentTime=f/tot*dur;await new Promise(r=>{v.onseeked=r});ctx.clearRect(0,0,cw,ch);ctx.drawImage(v,0,0,cw,ch);const fc=document.createElement('canvas');fc.width=cw;fc.height=ch;fc.getContext('2d').drawImage(cv,0,0);g.addFrame(fc,{delay:dl,copy:true})}URL.revokeObjectURL(u);return new Promise((y,n)=>{g.on('finished',y);g.on('error',n);g.render()})}
+function vfr(b){return new Promise((y,n)=>{const u=URL.createObjectURL(b),v=document.createElement('video');v.muted=true;v.playsInline=true;v.src=u;v.onloadeddata=()=>{v.currentTime=.01;v.onseeked=()=>{const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);c.toBlob(r=>{URL.revokeObjectURL(u);r?y(r):n(Error('frame fail'))},'image/png')}};v.onerror=()=>{URL.revokeObjectURL(u);n(Error('video fail'))}})}
+async function cvt(b,e,f){if(f==='original')return{blob:b,ext:e};if(f==='png'){if(e==='webp')return{blob:await w2p(b),ext:'png'};if(e==='tgs')return{blob:await t2g(b),ext:'gif'};if(e==='webm')return{blob:await vfr(b),ext:'png'};return{blob:b,ext:e}}if(f==='gif'){if(e==='tgs')return{blob:await t2g(b),ext:'gif'};if(e==='webm')return{blob:await v2g(b),ext:'gif'};if(e==='webp')return{blob:await w2p(b),ext:'png'};return{blob:b,ext:e}}return{blob:b,ext:e}}
+
+/* ===== DL UI ===== */
+function showDl(){document.getElementById('dlBar').classList.add('show');document.getElementById('btnAll').disabled=true;document.getElementById('btnSel').disabled=true}
+function hideDl(){document.getElementById('dlBar').classList.remove('show');document.getElementById('btnAll').disabled=false;document.getElementById('btnSel').disabled=false}
+function setRing(p){document.getElementById('rB').style.strokeDashoffset=97.4*(1-p/100);document.getElementById('rP').textContent=Math.round(p)+'%'}
+function cancelDl(){if(dlAbort){dlAbort.abort();dlAbort=null}}
+
+/* ===== SINGLE ===== */
+async function dlOne(i){
+  const s=pack.stickers[i],f=document.getElementById('selFmt').value;
+  badge(i,'wk','⟳');
+  try{const{blob,ext}=await getStk(s);const r=await cvt(blob,ext,f);saveAs(r.blob,pack.name+'_'+String(i+1).padStart(3,'0')+'.'+r.ext);badge(i,'ok','✓')}
+  catch(e){badge(i,'fl','✗');toast('失败：'+e.message,'error')}
+  setTimeout(()=>badge(i,''),2500);
+}
+
+/* ===== BATCH ===== */
+async function dlBatch(idx){
+  if(!idx.length)return toast('未选择','warn');
+  const fmt=document.getElementById('selFmt').value;
+  dlAbort=new AbortController();const sig=dlAbort.signal;
+  const total=idx.length;let done=0,fail=0,bytes=0,t0=Date.now();
+  showDl();setRing(0);document.getElementById('dT').textContent=`下载中 (0/${total})…`;
+  idx.forEach(i=>badge(i,''));
+  const results=[];
+  for(const i of idx){
+    if(sig.aborted)break;
+    badge(i,'wk','⟳');
+    try{
+      document.getElementById('dT').textContent=`下载中 (${done+1}/${total})…`;
+      const{blob,ext}=await getStk(pack.stickers[i],sig);
+      bytes+=blob.size;
+      document.getElementById('dT').textContent=`转换中 (${done+1}/${total})…`;
+      const r=await cvt(blob,ext,fmt);
+      results.push({i,blob:r.blob,ext:r.ext});
+      badge(i,'ok','✓');
+    }catch(e){if(e.name==='AbortError')break;badge(i,'fl','✗');fail++;console.warn('#'+(i+1),e.message)}
+    done++;setRing(done/total*100);
+    const el=(Date.now()-t0)/1000,sp=bytes/1024/Math.max(el,.1);
+    document.getElementById('dD').innerHTML=`<span>${done}/${total}</span><span>${sp>1024?(sp/1024).toFixed(1)+' MB/s':Math.round(sp)+' KB/s'}</span>${fail?'<span style="color:var(--red)">'+fail+'失败</span>':''}`;
+  }
+  if(sig.aborted){hideDl();toast('已取消','warn');return}
+  if(!results.length){hideDl();toast('全部失败','error');return}
+  document.getElementById('dT').textContent='打包 ZIP…';
+  try{
+    const zip=new JSZip(),folder=zip.folder(pack.name);
+    for(const r of results)folder.file(String(r.i+1).padStart(3,'0')+'_'+(pack.stickers[r.i].emoji||'')+'.'+r.ext,r.blob);
+    const zb=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}},m=>{document.getElementById('dT').textContent='打包 '+Math.round(m.percent)+'%';setRing(m.percent)});
+    saveAs(zb,pack.name+'.zip');
+    let msg=`下载完成！共 ${results.length} 个贴纸（${(bytes/1048576).toFixed(1)} MB）`;if(fail)msg+=`，${fail} 个失败`;toast(msg,'ok');
+  }catch(e){toast('ZIP 失败：'+e.message,'error')}
+  hideDl();setTimeout(()=>idx.forEach(i=>badge(i,'')),3000);
+}
+function dlAll(){dlBatch(pack.stickers.map((_,i)=>i))}
+function dlSel(){dlBatch([...selected].sort((a,b)=>a-b))}
+</script>
+</body>
+</html>
